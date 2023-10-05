@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "target": "es6",
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["./src/*"],
+      "~/img/*": ["./img/*"],
+      "~/font/*": ["./font/*"],
+      "~/types/*": ["./types/*"]
+    },
+    "noEmit": true,
+    "plugins": [
+      {
+        "name": "typescript-eslint-language-service"
+      }
+    ]
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
+}

@@ -1,7 +1,17 @@
-import { DummyDriver, ExpressionBuilder, Generated, Kysely, PostgresAdapter, PostgresIntrospector, PostgresQueryCompiler, sql } from "kysely";
+import {
+  DummyDriver,
+  ExpressionBuilder,
+  Generated,
+  Kysely,
+  PostgresAdapter,
+  PostgresIntrospector,
+  PostgresQueryCompiler,
+  sql,
+} from "kysely";
 
 interface DB {
   "mz_catalog.mz_roles": MzCatalogMzRoles;
+  "mz_catalog.mz_sources": { id: Generated<string> };
 }
 
 interface MzCatalogMzRoles {
@@ -28,14 +38,8 @@ const db = new Kysely<DB>({
   },
 });
 
-type Nullable<O> = {
-  [K in keyof O]: O[K] | null;
-};
-
 function isOwner() {
-  return (
-    eb: ExpressionBuilder<DB & Record<"r", Nullable<MzCatalogMzRoles>>, "r">
-  ) =>
+  return (eb: ExpressionBuilder<DB & { r: MzCatalogMzRoles }, "r">) =>
     eb
       .or([
         eb.fn("mz_is_superuser", []),
@@ -45,5 +49,9 @@ function isOwner() {
       .as("isOwner");
 }
 
-const query = db.selectFrom("mz_catalog.mz_roles as r").select(isOwner()).compile();
+const query = db
+  .selectFrom("mz_catalog.mz_roles as r")
+  .leftJoin("mz_catalog.mz_sources as s", "s.id", "r.id")
+  .select(isOwner())
+  .compile();
 console.log(query.sql);
